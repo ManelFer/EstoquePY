@@ -5,7 +5,7 @@ import os
 from docx import Document
 from docx.shared import Inches
 
-# adicionando a função de salvar em .doc
+# adicionando a função de salvar em .xlsx
 def save_data():
     global data_df
     data_df = pd.DataFrame(list_data, columns=["Name ", "Quantity"])
@@ -29,7 +29,7 @@ def save_data():
 
 def save_data():
     global data_df
-    data_df = pd.DataFrame(list_data, columns=["Name", "Quantity"])
+    data_df = pd.DataFrame(list_data, columns=["Name", "Quantity", "Patrimony"])
     data_df.to_excel('stock_control.xlsx', index=False)
 
 def load_data():
@@ -37,17 +37,18 @@ def load_data():
     if os.path.exists('stock_control.xlsx'):
         data_df = pd.read_excel('stock_control.xlsx')
         for index, row in data_df.iterrows():
-            list_data.append([row['Name'], row['Quantity']])
+            list_data.append([row['Name'], row['Quantity'], row['Patrimony']])
 
 def add_product():
     product_name = name_entry.get()
     product_quantity = quantity_entry.get()
+    product_patrimony = pat_entry.get()
 
     if not product_name or not product_quantity:
         messagebox.showerror('Error', 'All fields are required')
         return
 
-    list_data.append([product_name, product_quantity])
+    list_data.append([product_name, product_quantity, product_patrimony])
     save_data()
     display_data()
 
@@ -79,17 +80,23 @@ window.resizable(width=False, height=False) # Deixar o tamanho fixo sem resposiv
 frame = tk.Frame(window)
 frame.pack(pady=20)
 
+# bloco do produto
 name_label = tk.Label(frame, text='Nome do Produto')
 name_label.grid(row=0, column=0)
-
 name_entry = tk.Entry(frame)
 name_entry.grid(row=0, column=1)
 
+# bloco da quantidade
 quantity_label = tk.Label(frame, text='Quantidade')
 quantity_label.grid(row=1, column=0)
-
 quantity_entry = tk.Entry(frame, validate="key", validatecommand=(window.register(validar_entrada), "%P"))
 quantity_entry.grid(row=1, column=1)
+
+# bloco do patrimonio
+pat_label = tk.Label(frame, text='Patrimonio')
+pat_label.grid(row=2, column=0)
+pat_entry = tk.Entry(frame, validate="key", validatecommand=(window.register(validar_entrada), "%P"))
+pat_entry.grid(row=2, column=1)
 
 add_button = tk.Button(frame, text='Adicionar produto', command=add_product)
 add_button.grid(row=0, column=2, rowspan=2)
